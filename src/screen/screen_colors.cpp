@@ -16,13 +16,27 @@
 
 ***********************************************************************/
 ach::ScreenColors::ScreenColors() {
-	network = new ach::Network<sf::Color>;
+	network = new ach::Network<ach::Color>;
 
 	network->addLayer(3);
 	network->addLayer(4);
 	network->addLayer(2);
 
-	population = new ach::Population(100, network->count(), 0.0f, 2.0f);
+	population = new ach::Population(100, network->count(), -2.0f, 2.0f);
+
+	ach::Layer<ach::Color> *input = network->getInput();
+
+	input->neurons[0]->value.r = 1.0f;
+	input->neurons[0]->value.g = 0.0f;
+	input->neurons[0]->value.b = 0.0f;
+
+	input->neurons[1]->value.r = 0.0f;
+	input->neurons[1]->value.g = 1.0f;
+	input->neurons[1]->value.b = 0.0f;
+
+	input->neurons[2]->value.r = 0.0f;
+	input->neurons[2]->value.g = 0.0f;
+	input->neurons[2]->value.b = 1.0f;
 }
 
 

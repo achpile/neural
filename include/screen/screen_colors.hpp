@@ -12,8 +12,8 @@
 
 namespace ach {
 	struct ScreenColors : Screen {
-		ach::Network<sf::Color> *network;
-		ach::Population         *population;
+		ach::Network<ach::Color> *network;
+		ach::Population          *population;
 
 
 		 ScreenColors();
