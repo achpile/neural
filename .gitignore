@@ -1,0 +1,8 @@
+# Compiled Object files
+*.o
+neural
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
