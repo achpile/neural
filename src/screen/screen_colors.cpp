@@ -16,8 +16,13 @@
 
 ***********************************************************************/
 ach::ScreenColors::ScreenColors() {
-	network    = new ach::Network<sf::Color>;
-	population = new ach::Population(100, 12, 0.0f, 2.0f);
+	network = new ach::Network<sf::Color>;
+
+	network->addLayer(3);
+	network->addLayer(4);
+	network->addLayer(2);
+
+	population = new ach::Population(100, network->count(), 0.0f, 2.0f);
 }
 
 
