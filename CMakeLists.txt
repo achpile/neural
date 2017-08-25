@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED ( VERSION 2.8 )
-PROJECT ( neural )
+PROJECT ( neurals )
 
 INCLUDE_DIRECTORIES ("include" "include/meta" "include/steam" )
 FILE ( GLOB SRC "src/*/*.cpp" )
@@ -28,5 +28,5 @@ ELSEIF ( UNIX )
 ENDIF ( )
 
 
-ADD_EXECUTABLE ( neural ${SRC} ${CMAKE_RESOURCE} )
-TARGET_LINK_LIBRARIES ( neural  ${CMAKE_LINK_LIBS} )
+ADD_EXECUTABLE ( neurals ${SRC} ${CMAKE_RESOURCE} )
+TARGET_LINK_LIBRARIES ( neurals  ${CMAKE_LINK_LIBS} )

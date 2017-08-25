@@ -1,6 +1,6 @@
 # Compiled Object files
 *.o
-neural
+neurals
 
 # CMake files
 CMakeCache.txt

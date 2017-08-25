@@ -3,7 +3,7 @@
 #              Main Makefile for Neural Networks project                
 #                                                                       
 ########################################################################
-PROJECT     = neural
+PROJECT     = neurals
 INCLUDE_DIR = $(PWD)/include
 OBJS        = $(patsubst %.cpp,%.o,$(sort $(wildcard src/*/*.cpp)))
 NPROCS      = $(shell grep -c ^processor /proc/cpuinfo)

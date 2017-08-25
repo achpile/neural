@@ -27,6 +27,15 @@
 
 
 #include "defines.hpp"
+
+#include "neural/neural_base.hpp"
+#include "neural/neural_layer.hpp"
+#include "neural/neural_dna.hpp"
+#include "neural/neural_network.hpp"
+
+#include "creature/creature_base.hpp"
+#include "creature/creature_population.hpp"
+
 #include "externs.hpp"
 
 #endif
