@@ -1,29 +1,35 @@
 /***********************************************************************
-     * File       : defines.hpp
+     * File       : creature_population.cpp
      * Created    : Aug 25, 2017
      * Copyright  : (C) 2017 Achpile
      * Author     : Fedosov Alexander
      * Email      : achpile@gmail.com
 
 ***********************************************************************/
-#ifndef __DEFINES
-#define __DEFINES
+#include "headers.hpp"
 
 
 
 /***********************************************************************
-     * Main project constants
+     * Population
+     * constructor
 
 ***********************************************************************/
-#define PROJECT_CAPTION          "Neural Networks"
+ach::Population::Population(unsigned int count, float _min, float _max) {
+	min = _min;
+	max = _max;
+
+	for (unsigned int i = 0; i < count; i++)
+		creatures.push_back(new ach::Creature());
+}
 
 
 
 /***********************************************************************
-     * List processing macros
+     * Population
+     * destructor
 
 ***********************************************************************/
-#define deleteList(list)      for (; !(list).empty();) { if ((list).back()) delete (list).back(); (list).pop_back(); }
-
-
-#endif
+ach::Population::~Population() {
+	deleteList(creatures);
+}

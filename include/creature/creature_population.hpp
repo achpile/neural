@@ -9,9 +9,17 @@
 #ifndef __CREATURE_POPULATION
 #define __CREATURE_POPULATION
 
+
 namespace ach {
 	struct Population {
-		std::vector<ach::Creature> creatures;
+		std::vector<ach::Creature*> creatures;
+
+		float min;
+		float max;
+
+
+		 Population(unsigned int count, float _min, float _max);
+		~Population();
 	};
 }
 
