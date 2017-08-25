@@ -24,7 +24,8 @@ ach::ScreenColors::ScreenColors() {
 
 	population = new ach::Population(100, network->count(), -2.0f, 2.0f);
 
-	ach::Layer<ach::Color> *input = network->getInput();
+	input  = network->getInput();
+	output = network->getOutput();
 
 	input->neurons[0]->value.r = 1.0f;
 	input->neurons[0]->value.g = 0.0f;

@@ -53,6 +53,8 @@ ach::Color ach::Color::operator+(const ach::Color t) {
 	res.g = g + t.g;
 	res.b = b + t.b;
 
+	res.bound();
+
 	return res;
 }
 
@@ -69,6 +71,8 @@ ach::Color ach::Color::operator*(const float t) {
 	res.r = r * t;
 	res.g = g * t;
 	res.b = b * t;
+
+	res.bound();
 
 	return res;
 }
