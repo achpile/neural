@@ -28,6 +28,8 @@
 
 #include "defines.hpp"
 
+#include "misc/misc_base.hpp"
+
 #include "neural/neural_base.hpp"
 #include "neural/neural_layer.hpp"
 #include "neural/neural_dna.hpp"
@@ -36,6 +38,10 @@
 #include "creature/creature_base.hpp"
 #include "creature/creature_population.hpp"
 
+#include "screen/screen_base.hpp"
+#include "screen/screen_colors.hpp"
+
+#include "demo.hpp"
 #include "externs.hpp"
 
 #endif

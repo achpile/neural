@@ -1,16 +1,15 @@
 /***********************************************************************
-     * File       : externs.hpp
+     * File       : misc_base.hpp
      * Created    : Aug 25, 2017
      * Copyright  : (C) 2017 Achpile
      * Author     : Fedosov Alexander
      * Email      : achpile@gmail.com
 
 ***********************************************************************/
-#ifndef __EXTERNS
-#define __EXTERNS
+#ifndef __MISC_BASE
+#define __MISC_BASE
 
-extern ach::Demo        *demo;
-extern sf::RenderWindow *app;
-extern float             frameClock;
+
+void createWindow();
 
 #endif

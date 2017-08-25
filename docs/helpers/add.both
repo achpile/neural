@@ -1,0 +1,4 @@
+#!/bin/bash
+
+`dirname $0`/add.header $1 $2
+`dirname $0`/add.source $1 $2

@@ -9,4 +9,8 @@
 #ifndef __GLOBALS
 #define __GLOBALS
 
+ach::Demo        *demo;
+sf::RenderWindow *app;
+float             frameClock;
+
 #endif

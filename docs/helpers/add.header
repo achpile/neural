@@ -1,0 +1,36 @@
+#!/bin/bash
+
+DIR="include/$1"
+NAME="$2"
+FILE="$1_$2.hpp"
+FULL="$DIR/$FILE"
+DATE=`LC_TIME=en_US.UTF-8 date +'%b %d, %Y'`
+YEAR=`date +'%Y'`
+TOP1=`echo $1 | awk '{print toupper($0)}'`
+TOP2=`echo $2 | awk '{print toupper($0)}'`
+DEFENDER="__${TOP1}_${TOP2}"
+
+[ ! -d $DIR ] && mkdir $DIR
+
+cat > $FULL << EOF
+/***********************************************************************
+     * File       : $FILE
+     * Created    : $DATE
+     * Copyright  : (C) $YEAR Achpile
+     * Author     : Fedosov Alexander
+     * Email      : achpile@gmail.com
+
+***********************************************************************/
+#ifndef $DEFENDER
+#define $DEFENDER
+
+
+namespace ach {
+	struct ClassName {
+		 ClassName();
+		~ClassName();
+	};
+}
+
+#endif
+EOF

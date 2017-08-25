@@ -1,0 +1,44 @@
+########################################################################
+#!/bin/bash
+########################################################################
+#
+# Checking project status
+#
+########################################################################
+
+STATUS_DEF=`grep -rn "ifndef" src include | grep hpp | sed "s/.*\/.*\//__/" | sed "s/\:9\:\#ifndef//" | sed "s/\.hpp//" | tr a-z A-Z | while read A B; do if [ "$A" != "$B" ]; then echo "$A != $B"; fi; done`
+STATUS_FILE=`grep -rn "\* File" src include | sed "s/.*\/.*\///" | sed "s/\:.*\:.*\:/\ /" | while read A B; do if [ "$A" != "$B" ]; then echo "$A != $B"; fi ; done`
+STATUS_LINES=`cat CMakeList* Makefile* src/*/*.cpp include/*/*.hpp | wc -l`
+STATUS_FILES=`ls CMakeList* Makefile* src/*/*.cpp include/*/*.hpp | wc -l`
+STATUS_COMMITS=`git log --oneline | wc -l`
+STATUS_FIRST=`git rev-list --max-parents=0 HEAD`
+STATUS_AGE=`git show -s --format=%cr $STATUS_FIRST`
+STATUS_DATE=`git show -s --format=%cd --date=format:'%d %B %Y' $STATUS_FIRST`
+
+echo -n "Checking header defender names: "
+if [ -z "$STATUS_DEF" ]
+then
+	echo "good."
+else
+	echo
+	echo "$STATUS_DEF"
+	echo
+fi
+
+
+echo -n "Checking file names: "
+if [ -z "$STATUS_FILE" ]
+then
+	echo "good."
+else
+	echo
+	echo "$STATUS_FILE"
+fi
+
+
+echo
+echo "Total files  : $STATUS_FILES"
+echo "Total lines  : $STATUS_LINES"
+echo "Total commits: $STATUS_COMMITS"
+echo
+echo "Created: $STATUS_AGE ($STATUS_DATE)"

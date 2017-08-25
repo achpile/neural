@@ -1,5 +1,5 @@
 /***********************************************************************
-     * File       : main.cpp
+     * File       : screen_colors.cpp
      * Created    : Aug 25, 2017
      * Copyright  : (C) 2017 Achpile
      * Author     : Fedosov Alexander
@@ -7,20 +7,23 @@
 
 ***********************************************************************/
 #include "headers.hpp"
-#include "globals.hpp"
 
 
 
 /***********************************************************************
-     * Main function
+     * ScreenColors
+     * constructor
 
 ***********************************************************************/
-int main() {
-	demo = new ach::Demo;
-	srand(time(NULL));
+ach::ScreenColors::ScreenColors() {
+}
 
-	while(demo->running) demo->update();
-	delete demo;
 
-	return EXIT_SUCCESS;
+
+/***********************************************************************
+     * ScreenColors
+     * destructor
+
+***********************************************************************/
+ach::ScreenColors::~ScreenColors() {
 }

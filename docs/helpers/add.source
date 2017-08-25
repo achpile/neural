@@ -1,0 +1,42 @@
+#!/bin/bash
+
+DIR="src/$1"
+NAME="$2"
+FILE="$1_$2.cpp"
+FULL="$DIR/$FILE"
+DATE=`LC_TIME=en_US.UTF-8 date +'%b %d, %Y'`
+YEAR=`date +'%Y'`
+
+[ ! -d $DIR ] && mkdir $DIR
+
+cat > $FULL << EOF
+/***********************************************************************
+     * File       : $FILE
+     * Created    : $DATE
+     * Copyright  : (C) $YEAR Achpile
+     * Author     : Fedosov Alexander
+     * Email      : achpile@gmail.com
+
+***********************************************************************/
+#include "headers.hpp"
+
+
+
+/***********************************************************************
+     * ClassName
+     * constructor
+
+***********************************************************************/
+ach::ClassName::ClassName() {
+}
+
+
+
+/***********************************************************************
+     * ClassName
+     * destructor
+
+***********************************************************************/
+ach::ClassName::~ClassName() {
+}
+EOF
