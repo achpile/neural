@@ -29,6 +29,7 @@
 #include "defines.hpp"
 
 #include "misc/misc_base.hpp"
+#include "misc/misc_math.hpp"
 
 #include "neural/neural_base.hpp"
 #include "neural/neural_layer.hpp"

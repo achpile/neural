@@ -1,5 +1,5 @@
 /***********************************************************************
-     * File       : main.cpp
+     * File       : misc_math.cpp
      * Created    : Aug 25, 2017
      * Copyright  : (C) 2017 Achpile
      * Author     : Fedosov Alexander
@@ -7,19 +7,13 @@
 
 ***********************************************************************/
 #include "headers.hpp"
-#include "globals.hpp"
 
 
 
 /***********************************************************************
-     * Main function
+     * getRandomFloat
 
 ***********************************************************************/
-int main() {
-	demo = new ach::Demo;
-
-	while(demo->running) demo->update();
-	delete demo;
-
-	return EXIT_SUCCESS;
+float getRandomFloat(float min, float max) {
+	return min + (max - min) * (float)(rand() % 1000) / 1000.0f;
 }

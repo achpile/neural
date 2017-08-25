@@ -16,6 +16,8 @@
 
 ***********************************************************************/
 ach::ScreenColors::ScreenColors() {
+	network    = new ach::Network<sf::Color>;
+	population = new ach::Population(100, 12, 0.0f, 2.0f);
 }
 
 
@@ -26,4 +28,6 @@ ach::ScreenColors::ScreenColors() {
 
 ***********************************************************************/
 ach::ScreenColors::~ScreenColors() {
+	delete network;
+	delete population;
 }

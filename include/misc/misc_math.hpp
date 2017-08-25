@@ -1,19 +1,15 @@
 /***********************************************************************
-     * File       : neural_layer.hpp
+     * File       : misc_math.hpp
      * Created    : Aug 25, 2017
      * Copyright  : (C) 2017 Achpile
      * Author     : Fedosov Alexander
      * Email      : achpile@gmail.com
 
 ***********************************************************************/
-#ifndef __NEURAL_LAYER
-#define __NEURAL_LAYER
+#ifndef __MISC_MATH
+#define __MISC_MATH
 
-namespace ach {
-	template <class T>
-	struct Layer {
-		std::vector<ach::Neuron<T>> neurons;
-	};
-}
+
+float getRandomFloat(float min, float max);
 
 #endif

@@ -14,6 +14,9 @@ namespace ach {
 		ach::DNA dna;
 
 		float fitness;
+
+
+		Creature(unsigned int DNAlen, float min, float max);
 	};
 }
 

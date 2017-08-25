@@ -10,8 +10,9 @@
 #define __NEURAL_NEYWORK
 
 namespace ach {
+	template <class T>
 	struct Network {
-		std::vector<ach::Layer> layers;
+		std::vector<ach::Layer<T>> layers;
 	};
 }
 

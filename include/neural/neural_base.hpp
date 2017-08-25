@@ -10,10 +10,11 @@
 #define __NEURAL_BASE
 
 namespace ach {
+	template <class T>
 	struct Neuron {
-		std::vector<ach::Neuron*> links;
+		std::vector<Neuron<T>*> links;
 
-		float value;
+		T value;
 	};
 }
 

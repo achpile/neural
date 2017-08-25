@@ -1,5 +1,5 @@
 /***********************************************************************
-     * File       : meta_demo.cpp
+     * File       : demo.cpp
      * Created    : Aug 25, 2017
      * Copyright  : (C) 2017 Achpile
      * Author     : Fedosov Alexander
@@ -16,6 +16,8 @@
 
 ***********************************************************************/
 ach::Demo::Demo() {
+	srand(time(NULL));
+
 	app       = new sf::RenderWindow();
 	clock     = new sf::Clock;
 	screen    = new ach::ScreenColors;

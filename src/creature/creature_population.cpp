@@ -15,12 +15,12 @@
      * constructor
 
 ***********************************************************************/
-ach::Population::Population(unsigned int count, float _min, float _max) {
+ach::Population::Population(unsigned int count, unsigned int DNAlen, float _min, float _max) {
 	min = _min;
 	max = _max;
 
 	for (unsigned int i = 0; i < count; i++)
-		creatures.push_back(new ach::Creature());
+		creatures.push_back(new ach::Creature(DNAlen, _min, _max));
 }
 
 

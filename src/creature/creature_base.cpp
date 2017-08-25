@@ -1,5 +1,5 @@
 /***********************************************************************
-     * File       : main.cpp
+     * File       : creature_base.cpp
      * Created    : Aug 25, 2017
      * Copyright  : (C) 2017 Achpile
      * Author     : Fedosov Alexander
@@ -7,19 +7,15 @@
 
 ***********************************************************************/
 #include "headers.hpp"
-#include "globals.hpp"
 
 
 
 /***********************************************************************
-     * Main function
+     * Creature
+     * constructor
 
 ***********************************************************************/
-int main() {
-	demo = new ach::Demo;
-
-	while(demo->running) demo->update();
-	delete demo;
-
-	return EXIT_SUCCESS;
+ach::Creature::Creature(unsigned int DNAlen, float min, float max) {
+	for (unsigned int i = 0; i < DNAlen; i++)
+		dna.weights.push_back(getRandomFloat(min, max));
 }
