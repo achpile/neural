@@ -34,7 +34,7 @@ ach::ScreenColors::ScreenColors() {
 	population->reset();
 
 	circle.setRadius(30);
-	timer.setTimer(0.25f);
+	timer.setTimer(0.1f);
 
 	goal1.set(sf::Color(200,   0, 200));
 	goal2.set(sf::Color(100, 200, 100));
