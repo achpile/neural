@@ -16,41 +16,54 @@
 
 ***********************************************************************/
 ach::ScreenBird::ScreenBird() {
-	network = new ach::Network<ach::Color>;
+	network = new ach::Network<float>;
 
-	network->addLayer(3);
-	network->addLayer(4);
 	network->addLayer(2);
+	network->addLayer(6);
+	network->addLayer(1);
 
-	population = new ach::Population(100, network->count(), 0.0f, 1.0f);
+	population = new ach::Population(8, network->count(), -10.0f, 10.0f);
 
 	input  = network->getInput();
 	output = network->getOutput();
 
-	input->neurons[0]->value.set(sf::Color::Red);
-	input->neurons[1]->value.set(sf::Color::Green);
-	input->neurons[2]->value.set(sf::Color::Blue);
-
 	population->reset();
 
-	circle.setRadius(30);
-	timer.setTimer(0.1f);
+	population->mutProb = 0.005f;
+	iterations          = 0;
 
-	goal1.set(sf::Color(200,   0, 200));
-	goal2.set(sf::Color(100, 200, 100));
+	bird_up_t.loadFromFile("data/flappy/bird_up.png");
+	bird_down_t.loadFromFile("data/flappy/bird_down.png");
+	floor_t.loadFromFile("data/flappy/floor.png");
+	bg_t.loadFromFile("data/flappy/bg.png");
+	tube_top_t.loadFromFile("data/flappy/tube_top.png");
+	tube_bot_t.loadFromFile("data/flappy/tube_bot.png");
 
-	line.append(sf::Vertex());
-	line.append(sf::Vertex());
-	line.setPrimitiveType(sf::Lines);
+	floor_t.setRepeated(true);
+	bg_t.setRepeated(true);
 
-	for (unsigned int i = 0; i < population->creatures.size(); i++)
-		process(i);
+	bird_up.setTexture(bird_up_t);
+	bird_down.setTexture(bird_down_t);
+	floor.setTexture(&floor_t);
+	bg.setTexture(&bg_t);
+	tube_top.setTexture(tube_top_t);
+	tube_bot.setTexture(tube_bot_t);
 
-	for (unsigned int i = 0; i < network->count(); i++)
-		dna.weights.push_back(0.0f);
+	bird_up.setOrigin(sf::Vector2f(bird_up_t.getSize()) * 0.5f);
+	bird_down.setOrigin(sf::Vector2f(bird_down_t.getSize()) * 0.5f);
 
-	iterations = 0;
-	copyColors();
+	tube_top.setOrigin(sf::Vector2f(0, tube_top_t.getSize().y));
+
+	floor.setPosition(0, 520);
+	bg.setPosition(0, 0);
+
+	floor.setSize(sf::Vector2f(800, 80));
+	bg.setSize(sf::Vector2f(800, 520));
+
+	floor_rect = sf::IntRect(0, 0, 800,  80);
+	bg_rect    = sf::IntRect(0, 0, 800, 520);
+
+	reset();
 }
 
 
@@ -73,13 +86,25 @@ ach::ScreenBird::~ScreenBird() {
 
 ***********************************************************************/
 void ach::ScreenBird::update() {
-	process(population->crossover());
+	distance += FLAPPY_SPEED * frameClock;
+	offset   -= FLAPPY_SPEED * frameClock;
+	dst      -= FLAPPY_SPEED * frameClock;
 
-	if (!timer.process()) {
-		timer.reset();
-		copyColors();
-		copyWeights();
+	if (offset < -64.0f) {
+		next();
+		actual--;
 	}
+
+	if (dst    <   0.0f) {
+		dst += FLAPPY_DIFF;
+		actual++;
+	}
+
+	phys();
+
+	for (int i = 0; i < 8; i++)
+		if (!birds[i].dead)
+			process(i);
 
 	render();
 }
@@ -92,7 +117,7 @@ void ach::ScreenBird::update() {
 
 ***********************************************************************/
 void ach::ScreenBird::render() {
-	renderNetwork();
+	renderScene();
 	renderText();
 }
 
@@ -100,87 +125,77 @@ void ach::ScreenBird::render() {
 
 /***********************************************************************
      * ScreenBird
-     * renderNetwork
+     * renderScene
 
 ***********************************************************************/
-void ach::ScreenBird::renderNetwork() {
-	renderLine(50, 250, 200, 200, dna.weights[ 0]);
-	renderLine(50, 350, 200, 200, dna.weights[ 1]);
-	renderLine(50, 450, 200, 200, dna.weights[ 2]);
-	renderLine(50, 250, 200, 300, dna.weights[ 3]);
-	renderLine(50, 350, 200, 300, dna.weights[ 4]);
-	renderLine(50, 450, 200, 300, dna.weights[ 5]);
-	renderLine(50, 250, 200, 400, dna.weights[ 6]);
-	renderLine(50, 350, 200, 400, dna.weights[ 7]);
-	renderLine(50, 450, 200, 400, dna.weights[ 8]);
-	renderLine(50, 250, 200, 500, dna.weights[ 9]);
-	renderLine(50, 350, 200, 500, dna.weights[10]);
-	renderLine(50, 450, 200, 500, dna.weights[11]);
+void ach::ScreenBird::renderScene() {
+	bg_rect.left    = distance / 2.0f;
+	floor_rect.left = distance;
 
-	renderLine(200, 200, 350, 275, dna.weights[12]);
-	renderLine(200, 300, 350, 275, dna.weights[13]);
-	renderLine(200, 400, 350, 275, dna.weights[14]);
-	renderLine(200, 500, 350, 275, dna.weights[15]);
-	renderLine(200, 200, 350, 425, dna.weights[16]);
-	renderLine(200, 300, 350, 425, dna.weights[17]);
-	renderLine(200, 400, 350, 425, dna.weights[18]);
-	renderLine(200, 500, 350, 425, dna.weights[19]);
+	bg.setTextureRect(bg_rect);
+	floor.setTextureRect(floor_rect);
 
-
-	renderNeuron( 50, 250, colors[0],  1, sf::Color::Black);
-	renderNeuron( 50, 350, colors[1],  1, sf::Color::Black);
-	renderNeuron( 50, 450, colors[2],  1, sf::Color::Black);
-
-	renderNeuron(200, 200, colors[3],  1, sf::Color::Black);
-	renderNeuron(200, 300, colors[4],  1, sf::Color::Black);
-	renderNeuron(200, 400, colors[5],  1, sf::Color::Black);
-	renderNeuron(200, 500, colors[6],  1, sf::Color::Black);
-
-	renderNeuron(350, 275, colors[7], 20, goal1.get());
-	renderNeuron(350, 425, colors[8], 20, goal2.get());
+	app->draw(bg);
+	renderBirds();
+	renderTubes();
+	app->draw(floor);
 }
 
 
 
 /***********************************************************************
      * ScreenBird
-     * renderNeuron
+     * renderTubes
 
 ***********************************************************************/
-void ach::ScreenBird::renderNeuron(int x, int y, sf::Color c, int border, sf::Color bc) {
-	circle.setOutlineThickness(border);
-	circle.setOutlineColor(bc);
-	circle.setPosition(x, y);
-	circle.setFillColor(c);
-	app->draw(circle);
+void ach::ScreenBird::renderTubes() {
+	for (int i = 0; i < 4; i++)
+		renderTube(offset + FLAPPY_DIFF * i, tubes[i]);
 }
 
 
 
 /***********************************************************************
      * ScreenBird
-     * renderLine
+     * renderTube
 
 ***********************************************************************/
-void ach::ScreenBird::renderLine(int x1, int y1, int x2, int y2, float weight) {
-	line[0].color = sf::Color(255 * (1.0f - weight), 255 * (weight), 0);
-	line[1].color = sf::Color(255 * (1.0f - weight), 255 * (weight), 0);
+void ach::ScreenBird::renderTube(float x, float y) {
+	tube_top.setPosition(x, y - FLAPPY_HIGH);
+	app->draw(tube_top);
 
-	line[0].position = sf::Vector2f(x1 + 31, y1 + 30);
-	line[1].position = sf::Vector2f(x2 + 31, y2 + 30);
-	app->draw(line);
+	tube_bot.setPosition(x, y + FLAPPY_HIGH);
+	app->draw(tube_bot);
+}
 
-	line[0].position = sf::Vector2f(x1 + 29, y1 + 30);
-	line[1].position = sf::Vector2f(x2 + 29, y2 + 30);
-	app->draw(line);
 
-	line[0].position = sf::Vector2f(x1 + 30, y1 + 31);
-	line[1].position = sf::Vector2f(x2 + 30, y2 + 31);
-	app->draw(line);
 
-	line[0].position = sf::Vector2f(x1 + 30, y1 + 29);
-	line[1].position = sf::Vector2f(x2 + 30, y2 + 29);
-	app->draw(line);
+/***********************************************************************
+     * ScreenBird
+     * renderBirds
+
+***********************************************************************/
+void ach::ScreenBird::renderBirds() {
+	for (int i = 0; i < 8; i++)
+		if (!birds[i].dead)
+			renderBird(birds[i].y, birds[i].speed);
+}
+
+
+
+/***********************************************************************
+     * ScreenBird
+     * renderBird
+
+***********************************************************************/
+void ach::ScreenBird::renderBird(float y, float speed) {
+	if (speed > 0.0f) {
+		bird_up.setPosition(100, y);
+		app->draw(bird_up);
+	} else {
+		bird_down.setPosition(100, y);
+		app->draw(bird_down);
+	}
 }
 
 
@@ -191,23 +206,93 @@ void ach::ScreenBird::renderLine(int x1, int y1, int x2, int y2, float weight) {
 
 ***********************************************************************/
 void ach::ScreenBird::renderText() {
-	drawText(10, 10, std::string("Population      : ") + std::to_string(population->creatures.size()));
-	drawText(10, 30, std::string("Avg. fitness    : ") + std::to_string(population->avg));
-	drawText(10, 50, std::string("Iterations      : ") + std::to_string(iterations));
-	drawText(10, 70, std::string("Mutations       : ") + std::to_string(population->mutations));
-	drawText(10, 90, std::string("Mutation prob, %: ") + std::to_string(population->mutProb * 100.0f));
+	drawText(10,  10, std::string("Population      : ") + std::to_string(population->creatures.size()));
+	drawText(10,  30, std::string("Alive           : ") + std::to_string(alive));
+	drawText(10,  50, std::string("Avg. fitness    : ") + std::to_string(population->avg));
+	drawText(10,  70, std::string("Iterations      : ") + std::to_string(iterations));
+	drawText(10,  90, std::string("Distance        : ") + std::to_string(distance));
+	drawText(10, 110, std::string("Distance left   : ") + std::to_string(dst));
+	drawText(10, 130, std::string("Mutations       : ") + std::to_string(population->mutations));
+	drawText(10, 150, std::string("Mutation prob, %: ") + std::to_string(population->mutProb * 100.0f));
 }
 
 
 
 /***********************************************************************
      * ScreenBird
-     * fitness
+     * reset
 
 ***********************************************************************/
-float ach::ScreenBird::fitness(ach::Color c1, ach::Color c2) {
-	return 6.0f - ((sqr(c1.r - goal1.r) + sqr(c1.g - goal1.g) + sqr(c1.b - goal1.b)) + 
-	               (sqr(c2.r - goal2.r) + sqr(c2.g - goal2.g) + sqr(c2.b - goal2.b)));
+void ach::ScreenBird::reset() {
+	offset   = 400.0f;
+	distance = 0.0f;
+	actual   = 0;
+	dst      = 364.0f;
+
+	for (int i = 0; i < 4; i++)
+		tubes[i] = getRandomFloat(100.0f, 450.0f);
+
+	for (int i = 0; i < 8; i++) {
+		birds[i].y     = 260.0f;
+		birds[i].dead  = false;
+		birds[i].speed = 0.0f;
+	}
+}
+
+
+
+/***********************************************************************
+     * ScreenBird
+     * phys
+
+***********************************************************************/
+void ach::ScreenBird::phys() {
+	alive = 0;
+
+	for (int i = 0; i < 8; i++) {
+		if (birds[i].dead) continue;
+
+		birds[i].speed +=         600.0f * frameClock;
+		birds[i].y     += birds[i].speed * frameClock;
+
+		if (check(birds[i].y)) {
+			birds[i].dead = true;
+			population->creatures[i]->fitness = distance;
+		}
+
+		if (!birds[i].dead) alive++;
+	}
+
+	if (!alive) reset();
+}
+
+
+
+/***********************************************************************
+     * ScreenBird
+     * check
+
+***********************************************************************/
+bool ach::ScreenBird::check(float y) {
+	if (y > 528.0f) return true;
+	if (y <  12.0f) return true;
+
+	return false;
+}
+
+
+
+/***********************************************************************
+     * ScreenBird
+     * next
+
+***********************************************************************/
+void ach::ScreenBird::next() {
+	for (int i = 0; i < 3; i++)
+		tubes[i] = tubes[i+1];
+
+	tubes[3]  = getRandomFloat(100.0f, 450.0f);
+	offset   += FLAPPY_DIFF;
 }
 
 
@@ -218,47 +303,11 @@ float ach::ScreenBird::fitness(ach::Color c1, ach::Color c2) {
 
 ***********************************************************************/
 void ach::ScreenBird::process(unsigned int index) {
-	iterations++;
+	input->neurons[0]->value = birds[index].y - tubes[actual];
+	input->neurons[1]->value = dst;
 
 	network->calculate(&population->creatures[index]->dna);
-	population->creatures[index]->fitness = fitness(output->neurons[0]->value,
-	                                                output->neurons[1]->value);
 
-	population->mutProb = 1.0f - (population->avg / 6.0f);
-
-	if (population->mutProb > 0.01f)
-		population->mutProb = 0.01f;
-}
-
-
-
-/***********************************************************************
-     * ScreenBird
-     * copyColors
-
-***********************************************************************/
-void ach::ScreenBird::copyColors() {
-	colors[0] = input->neurons[0]->value.get();
-	colors[1] = input->neurons[1]->value.get();
-	colors[2] = input->neurons[2]->value.get();
-
-	colors[3] = network->layers[1]->neurons[0]->value.get();
-	colors[4] = network->layers[1]->neurons[1]->value.get();
-	colors[5] = network->layers[1]->neurons[2]->value.get();
-	colors[6] = network->layers[1]->neurons[3]->value.get();
-
-	colors[7] = output->neurons[0]->value.get();
-	colors[8] = output->neurons[1]->value.get();
-}
-
-
-
-/***********************************************************************
-     * ScreenBird
-     * copyWeights
-
-***********************************************************************/
-void ach::ScreenBird::copyWeights() {
-	for (unsigned int i = 0; i < dna.weights.size(); i++)
-		dna.weights[i] = population->creatures[population->last]->dna.weights[i];
+	if (output->neurons[0]->value > 0.0f)
+		birds[index].speed = -300.0f;
 }
