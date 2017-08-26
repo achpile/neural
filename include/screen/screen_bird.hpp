@@ -23,7 +23,7 @@ namespace ach {
 		ach::Population          *population;
 		ach::Layer<float>        *input;
 		ach::Layer<float>        *output;
-		ach::Bird                 birds[8];
+		ach::Bird                 birds[FLAPPY_COUNT];
 
 		sf::Texture               bird_up_t;
 		sf::Texture               bird_down_t;
@@ -45,10 +45,13 @@ namespace ach {
 		float                     distance;
 		float                     offset;
 		float                     dst;
+		float                     best;
 		float                     tubes[4];
 		unsigned int              iterations;
 		unsigned int              alive;
 		int                       actual;
+		int                       score;
+		int                       maxScore;
 
 
 		 ScreenBird();

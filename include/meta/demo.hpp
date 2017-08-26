@@ -17,7 +17,6 @@ namespace ach {
 
 		long lastClock;
 		bool running;
-		bool focused;
 
 
 		 Demo();

@@ -19,6 +19,7 @@ namespace ach {
 		float        min;
 		float        max;
 		float        avg;
+		float        best;
 		float        mutProb;
 
 
@@ -26,6 +27,8 @@ namespace ach {
 		~Population();
 
 		unsigned int crossover();
+		unsigned int crossover2();
+		void         stats();
 		void         reset();
 	};
 }

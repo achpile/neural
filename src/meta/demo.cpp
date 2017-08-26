@@ -22,7 +22,6 @@ ach::Demo::Demo() {
 	clock     = new sf::Clock;
 	screen    = new ach::ScreenBird;
 	running   = true;
-	focused   = true;
 	lastClock = clock->getElapsedTime().asMilliseconds();
 
 	createWindow();
@@ -59,11 +58,8 @@ void ach::Demo::update() {
 
 	frameClock = (currentClock - lastClock) / 1000.0;
 	lastClock  = currentClock;
-	focused    = app->hasFocus();
 
 	processEvents();
-
-	if (!focused) return;
 
 	app->clear(sf::Color::White);
 	screen->update();

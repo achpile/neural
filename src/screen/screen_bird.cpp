@@ -22,7 +22,7 @@ ach::ScreenBird::ScreenBird() {
 	network->addLayer(6);
 	network->addLayer(1);
 
-	population = new ach::Population(8, network->count(), -10.0f, 10.0f);
+	population = new ach::Population(FLAPPY_COUNT, network->count(), -10.0f, 10.0f);
 
 	input  = network->getInput();
 	output = network->getOutput();
@@ -30,7 +30,9 @@ ach::ScreenBird::ScreenBird() {
 	population->reset();
 
 	population->mutProb = 0.005f;
+	best                = 0.0f;
 	iterations          = 0;
+	maxScore            = 0;
 
 	bird_up_t.loadFromFile("data/flappy/bird_up.png");
 	bird_down_t.loadFromFile("data/flappy/bird_down.png");
@@ -98,11 +100,12 @@ void ach::ScreenBird::update() {
 	if (dst    <   0.0f) {
 		dst += FLAPPY_DIFF;
 		actual++;
+		score++;
 	}
 
 	phys();
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < FLAPPY_COUNT; i++)
 		if (!birds[i].dead)
 			process(i);
 
@@ -176,7 +179,7 @@ void ach::ScreenBird::renderTube(float x, float y) {
 
 ***********************************************************************/
 void ach::ScreenBird::renderBirds() {
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < FLAPPY_COUNT; i++)
 		if (!birds[i].dead)
 			renderBird(birds[i].y, birds[i].speed);
 }
@@ -206,14 +209,18 @@ void ach::ScreenBird::renderBird(float y, float speed) {
 
 ***********************************************************************/
 void ach::ScreenBird::renderText() {
-	drawText(10,  10, std::string("Population      : ") + std::to_string(population->creatures.size()));
-	drawText(10,  30, std::string("Alive           : ") + std::to_string(alive));
-	drawText(10,  50, std::string("Avg. fitness    : ") + std::to_string(population->avg));
-	drawText(10,  70, std::string("Iterations      : ") + std::to_string(iterations));
-	drawText(10,  90, std::string("Distance        : ") + std::to_string(distance));
-	drawText(10, 110, std::string("Distance left   : ") + std::to_string(dst));
-	drawText(10, 130, std::string("Mutations       : ") + std::to_string(population->mutations));
-	drawText(10, 150, std::string("Mutation prob, %: ") + std::to_string(population->mutProb * 100.0f));
+	drawText(410,  10, std::string("Population      : ") + std::to_string(population->creatures.size()));
+	drawText(410,  30, std::string("Alive           : ") + std::to_string(alive));
+	drawText(410,  50, std::string("Avg. fitness    : ") + std::to_string(population->avg));
+	drawText(410,  70, std::string("Best fitness    : ") + std::to_string(population->best));
+	drawText(410,  90, std::string("Max fitness     : ") + std::to_string(best));
+	drawText(410, 110, std::string("Iterations      : ") + std::to_string(iterations));
+	drawText(410, 130, std::string("Distance        : ") + std::to_string(distance));
+	drawText(410, 150, std::string("Score           : ") + std::to_string(score));
+	drawText(410, 170, std::string("Max Score       : ") + std::to_string(maxScore));
+	drawText(410, 190, std::string("Distance left   : ") + std::to_string(dst));
+	drawText(410, 210, std::string("Mutations       : ") + std::to_string(population->mutations));
+	drawText(410, 230, std::string("Mutation prob, %: ") + std::to_string(population->mutProb * 100.0f));
 }
 
 
@@ -227,12 +234,13 @@ void ach::ScreenBird::reset() {
 	offset   = 400.0f;
 	distance = 0.0f;
 	actual   = 0;
-	dst      = 364.0f;
+	score    = 0;
+	dst      = 381.0f;
 
 	for (int i = 0; i < 4; i++)
-		tubes[i] = getRandomFloat(100.0f, 450.0f);
+		tubes[i] = getRandomFloat(FLAPPY_LIMIT_T, FLAPPY_LIMIT_B);
 
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < FLAPPY_COUNT; i++) {
 		birds[i].y     = 260.0f;
 		birds[i].dead  = false;
 		birds[i].speed = 0.0f;
@@ -249,10 +257,10 @@ void ach::ScreenBird::reset() {
 void ach::ScreenBird::phys() {
 	alive = 0;
 
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < FLAPPY_COUNT; i++) {
 		if (birds[i].dead) continue;
 
-		birds[i].speed +=         600.0f * frameClock;
+		birds[i].speed +=        1200.0f * frameClock;
 		birds[i].y     += birds[i].speed * frameClock;
 
 		if (check(birds[i].y)) {
@@ -263,7 +271,17 @@ void ach::ScreenBird::phys() {
 		if (!birds[i].dead) alive++;
 	}
 
-	if (!alive) reset();
+	if (!alive) {
+		if (maxScore < score)
+			maxScore = score;
+
+		population->crossover2();
+		reset();
+		iterations++;
+
+		if (best < population->best)
+			best = population->best;
+	}
 }
 
 
@@ -274,8 +292,26 @@ void ach::ScreenBird::phys() {
 
 ***********************************************************************/
 bool ach::ScreenBird::check(float y) {
+	sf::FloatRect bird;
+	sf::FloatRect tube;
+
 	if (y > 528.0f) return true;
 	if (y <  12.0f) return true;
+
+	bird = sf::FloatRect(87, y - 12, 34, 24);
+
+	tube = sf::FloatRect(offset, tubes[0] + FLAPPY_HIGH, 64, 500);
+	if (tube.intersects(bird)) return true;
+
+	tube = sf::FloatRect(offset, 0, 64, tubes[0] - FLAPPY_HIGH);
+	if (tube.intersects(bird)) return true;
+
+	tube = sf::FloatRect(offset + FLAPPY_DIFF, tubes[1] + FLAPPY_HIGH, 64, 500);
+	if (tube.intersects(bird)) return true;
+
+	tube = sf::FloatRect(offset + FLAPPY_DIFF, 0, 64, tubes[1] - FLAPPY_HIGH);
+	if (tube.intersects(bird)) return true;
+
 
 	return false;
 }
@@ -291,7 +327,7 @@ void ach::ScreenBird::next() {
 	for (int i = 0; i < 3; i++)
 		tubes[i] = tubes[i+1];
 
-	tubes[3]  = getRandomFloat(100.0f, 450.0f);
+	tubes[3]  = getRandomFloat(FLAPPY_LIMIT_T, FLAPPY_LIMIT_B);
 	offset   += FLAPPY_DIFF;
 }
 

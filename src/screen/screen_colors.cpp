@@ -191,11 +191,12 @@ void ach::ScreenColors::renderLine(int x1, int y1, int x2, int y2, float weight)
 
 ***********************************************************************/
 void ach::ScreenColors::renderText() {
-	drawText(10, 10, std::string("Population      : ") + std::to_string(population->creatures.size()));
-	drawText(10, 30, std::string("Avg. fitness    : ") + std::to_string(population->avg));
-	drawText(10, 50, std::string("Iterations      : ") + std::to_string(iterations));
-	drawText(10, 70, std::string("Mutations       : ") + std::to_string(population->mutations));
-	drawText(10, 90, std::string("Mutation prob, %: ") + std::to_string(population->mutProb * 100.0f));
+	drawText(10,  10, std::string("Population      : ") + std::to_string(population->creatures.size()));
+	drawText(10,  30, std::string("Avg. fitness    : ") + std::to_string(population->avg));
+	drawText(10,  50, std::string("Best fitness    : ") + std::to_string(population->best));
+	drawText(10,  70, std::string("Iterations      : ") + std::to_string(iterations));
+	drawText(10,  90, std::string("Mutations       : ") + std::to_string(population->mutations));
+	drawText(10, 110, std::string("Mutation prob, %: ") + std::to_string(population->mutProb * 100.0f));
 }
 
 
