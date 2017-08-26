@@ -39,8 +39,15 @@ ach::ScreenColors::ScreenColors() {
 	goal1.set(sf::Color(200,   0, 200));
 	goal2.set(sf::Color(100, 200, 100));
 
+	line.append(sf::Vertex());
+	line.append(sf::Vertex());
+	line.setPrimitiveType(sf::Lines);
+
 	for (unsigned int i = 0; i < population->creatures.size(); i++)
 		process(i);
+
+	for (unsigned int i = 0; i < network->count(); i++)
+		dna.weights.push_back(0.0f);
 
 	iterations = 0;
 	copyColors();
@@ -71,6 +78,7 @@ void ach::ScreenColors::update() {
 	if (!timer.process()) {
 		timer.reset();
 		copyColors();
+		copyWeights();
 	}
 
 	render();
@@ -96,6 +104,29 @@ void ach::ScreenColors::render() {
 
 ***********************************************************************/
 void ach::ScreenColors::renderNetwork() {
+	renderLine(50, 250, 200, 200, dna.weights[ 0]);
+	renderLine(50, 350, 200, 200, dna.weights[ 1]);
+	renderLine(50, 450, 200, 200, dna.weights[ 2]);
+	renderLine(50, 250, 200, 300, dna.weights[ 3]);
+	renderLine(50, 350, 200, 300, dna.weights[ 4]);
+	renderLine(50, 450, 200, 300, dna.weights[ 5]);
+	renderLine(50, 250, 200, 400, dna.weights[ 6]);
+	renderLine(50, 350, 200, 400, dna.weights[ 7]);
+	renderLine(50, 450, 200, 400, dna.weights[ 8]);
+	renderLine(50, 250, 200, 500, dna.weights[ 9]);
+	renderLine(50, 350, 200, 500, dna.weights[10]);
+	renderLine(50, 450, 200, 500, dna.weights[11]);
+
+	renderLine(200, 200, 350, 275, dna.weights[12]);
+	renderLine(200, 300, 350, 275, dna.weights[13]);
+	renderLine(200, 400, 350, 275, dna.weights[14]);
+	renderLine(200, 500, 350, 275, dna.weights[15]);
+	renderLine(200, 200, 350, 425, dna.weights[16]);
+	renderLine(200, 300, 350, 425, dna.weights[17]);
+	renderLine(200, 400, 350, 425, dna.weights[18]);
+	renderLine(200, 500, 350, 425, dna.weights[19]);
+
+
 	renderNeuron( 50, 250, colors[0],  1, sf::Color::Black);
 	renderNeuron( 50, 350, colors[1],  1, sf::Color::Black);
 	renderNeuron( 50, 450, colors[2],  1, sf::Color::Black);
@@ -122,6 +153,34 @@ void ach::ScreenColors::renderNeuron(int x, int y, sf::Color c, int border, sf::
 	circle.setPosition(x, y);
 	circle.setFillColor(c);
 	app->draw(circle);
+}
+
+
+
+/***********************************************************************
+     * ScreenColors
+     * renderLine
+
+***********************************************************************/
+void ach::ScreenColors::renderLine(int x1, int y1, int x2, int y2, float weight) {
+	line[0].color = sf::Color(255 * (1.0f - weight), 255 * (weight), 0);
+	line[1].color = sf::Color(255 * (1.0f - weight), 255 * (weight), 0);
+
+	line[0].position = sf::Vector2f(x1 + 31, y1 + 30);
+	line[1].position = sf::Vector2f(x2 + 31, y2 + 30);
+	app->draw(line);
+
+	line[0].position = sf::Vector2f(x1 + 29, y1 + 30);
+	line[1].position = sf::Vector2f(x2 + 29, y2 + 30);
+	app->draw(line);
+
+	line[0].position = sf::Vector2f(x1 + 30, y1 + 31);
+	line[1].position = sf::Vector2f(x2 + 30, y2 + 31);
+	app->draw(line);
+
+	line[0].position = sf::Vector2f(x1 + 30, y1 + 29);
+	line[1].position = sf::Vector2f(x2 + 30, y2 + 29);
+	app->draw(line);
 }
 
 
@@ -190,4 +249,16 @@ void ach::ScreenColors::copyColors() {
 
 	colors[7] = output->neurons[0]->value.get();
 	colors[8] = output->neurons[1]->value.get();
+}
+
+
+
+/***********************************************************************
+     * ScreenColors
+     * copyWeights
+
+***********************************************************************/
+void ach::ScreenColors::copyWeights() {
+	for (unsigned int i = 0; i < dna.weights.size(); i++)
+		dna.weights[i] = population->creatures[population->last]->dna.weights[i];
 }

@@ -67,6 +67,7 @@ unsigned int ach::Population::crossover() {
 
 	creatures[min]->fitness = 0.0f;
 
+	last       = min;
 	mutations += creatures[min]->crossover(&creatures[p1]->dna, &creatures[p2]->dna, min, max, mutProb);
 
 	return min;
