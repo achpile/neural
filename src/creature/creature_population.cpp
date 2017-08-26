@@ -16,8 +16,9 @@
 
 ***********************************************************************/
 ach::Population::Population(unsigned int count, unsigned int DNAlen, float _min, float _max) {
-	min = _min;
-	max = _max;
+	min       = _min;
+	max       = _max;
+	mutations = 0;
 
 	for (unsigned int i = 0; i < count; i++)
 		creatures.push_back(new ach::Creature(DNAlen, _min, _max));
@@ -65,7 +66,8 @@ unsigned int ach::Population::crossover() {
 	} while (p2 == min || p2 == p1);
 
 	creatures[min]->fitness = 0.0f;
-	creatures[min]->crossover(&creatures[p1]->dna, &creatures[p2]->dna, min, max);
+
+	mutations += creatures[min]->crossover(&creatures[p1]->dna, &creatures[p2]->dna, min, max, mutProb);
 
 	return min;
 }

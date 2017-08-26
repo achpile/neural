@@ -23,6 +23,8 @@ namespace ach {
 		sf::CircleShape           circle;
 		sf::Color                 colors[9];
 
+		unsigned int              iterations;
+
 
 		 ScreenColors();
 		~ScreenColors();

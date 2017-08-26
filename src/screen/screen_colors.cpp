@@ -42,6 +42,7 @@ ach::ScreenColors::ScreenColors() {
 	for (unsigned int i = 0; i < population->creatures.size(); i++)
 		process(i);
 
+	iterations = 0;
 	copyColors();
 }
 
@@ -95,17 +96,17 @@ void ach::ScreenColors::render() {
 
 ***********************************************************************/
 void ach::ScreenColors::renderNetwork() {
-	renderNeuron( 50, 300, colors[0],  1, sf::Color::Black);
-	renderNeuron( 50, 400, colors[1],  1, sf::Color::Black);
-	renderNeuron( 50, 500, colors[2],  1, sf::Color::Black);
+	renderNeuron( 50, 250, colors[0],  1, sf::Color::Black);
+	renderNeuron( 50, 350, colors[1],  1, sf::Color::Black);
+	renderNeuron( 50, 450, colors[2],  1, sf::Color::Black);
 
-	renderNeuron(200, 250, colors[3],  1, sf::Color::Black);
-	renderNeuron(200, 350, colors[4],  1, sf::Color::Black);
-	renderNeuron(200, 450, colors[5],  1, sf::Color::Black);
-	renderNeuron(200, 550, colors[6],  1, sf::Color::Black);
+	renderNeuron(200, 200, colors[3],  1, sf::Color::Black);
+	renderNeuron(200, 300, colors[4],  1, sf::Color::Black);
+	renderNeuron(200, 400, colors[5],  1, sf::Color::Black);
+	renderNeuron(200, 500, colors[6],  1, sf::Color::Black);
 
-	renderNeuron(350, 325, colors[7], 20, goal1.get());
-	renderNeuron(350, 475, colors[8], 20, goal2.get());
+	renderNeuron(350, 275, colors[7], 20, goal1.get());
+	renderNeuron(350, 425, colors[8], 20, goal2.get());
 }
 
 
@@ -131,7 +132,11 @@ void ach::ScreenColors::renderNeuron(int x, int y, sf::Color c, int border, sf::
 
 ***********************************************************************/
 void ach::ScreenColors::renderText() {
-	drawText(10, 10, std::string("Avg. fitness: ") + std::to_string(population->avg));
+	drawText(10, 10, std::string("Population      : ") + std::to_string(population->creatures.size()));
+	drawText(10, 30, std::string("Avg. fitness    : ") + std::to_string(population->avg));
+	drawText(10, 50, std::string("Iterations      : ") + std::to_string(iterations));
+	drawText(10, 70, std::string("Mutations       : ") + std::to_string(population->mutations));
+	drawText(10, 90, std::string("Mutation prob, %: ") + std::to_string(population->mutProb * 100.0f));
 }
 
 
@@ -142,7 +147,7 @@ void ach::ScreenColors::renderText() {
 
 ***********************************************************************/
 float ach::ScreenColors::fitness(ach::Color c1, ach::Color c2) {
-	return 2.0f - ((sqr(c1.r - goal1.r) + sqr(c1.g - goal1.g) + sqr(c1.b - goal1.b)) + 
+	return 6.0f - ((sqr(c1.r - goal1.r) + sqr(c1.g - goal1.g) + sqr(c1.b - goal1.b)) + 
 	               (sqr(c2.r - goal2.r) + sqr(c2.g - goal2.g) + sqr(c2.b - goal2.b)));
 }
 
@@ -154,9 +159,13 @@ float ach::ScreenColors::fitness(ach::Color c1, ach::Color c2) {
 
 ***********************************************************************/
 void ach::ScreenColors::process(unsigned int index) {
+	iterations++;
+
 	network->calculate(&population->creatures[index]->dna);
 	population->creatures[index]->fitness = fitness(output->neurons[0]->value,
-	                                            output->neurons[1]->value);
+	                                                output->neurons[1]->value);
+
+	population->mutProb = 1 - (population->avg / 6.0f);
 }
 
 

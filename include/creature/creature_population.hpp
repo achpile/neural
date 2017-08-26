@@ -14,9 +14,11 @@ namespace ach {
 	struct Population {
 		std::vector<ach::Creature*> creatures;
 
+		int   mutations;
 		float min;
 		float max;
 		float avg;
+		float mutProb;
 
 
 		 Population(unsigned int count, unsigned int DNAlen, float _min, float _max);

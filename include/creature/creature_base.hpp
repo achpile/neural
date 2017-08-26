@@ -18,7 +18,7 @@ namespace ach {
 
 		Creature(unsigned int DNAlen, float min, float max);
 
-		void crossover(ach::DNA *p1, ach::DNA *p2, float min, float max);
+		int  crossover(ach::DNA *p1, ach::DNA *p2, float min, float max, float mutProb);
 	};
 }
 
