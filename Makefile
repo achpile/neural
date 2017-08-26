@@ -20,7 +20,7 @@ STRIP       = @strip
 MAKE        = @make -j${NPROCS} --no-print-directory
 ECHO        = @echo
 CLEAN       = @rm -rf
-PROGRESS    = \[`echo $(OBJS) | sed "s/\ /\n/g" | grep -n $@ | cut -f1 -d: | tr -d '\n' | xargs -0 printf "%d"`\/$(TOTAL)\]
+PROGRESS    = \[`echo $(OBJS) | sed "s/\ /\n/g" | grep -n $@ | cut -f1 -d: | tr -d '\n' | xargs -0 printf "%02d"`\/$(TOTAL)\]
 
 
 NORMAL      = "\033[0m"
