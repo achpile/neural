@@ -20,6 +20,9 @@ namespace ach {
 
 		 Population(unsigned int count, unsigned int DNAlen, float _min, float _max);
 		~Population();
+
+		unsigned int crossover();
+		void         reset();
 	};
 }
 

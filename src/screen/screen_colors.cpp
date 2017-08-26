@@ -38,6 +38,8 @@ ach::ScreenColors::ScreenColors() {
 	input->neurons[2]->value.r = 0.0f;
 	input->neurons[2]->value.g = 0.0f;
 	input->neurons[2]->value.b = 1.0f;
+
+	population->reset();
 }
 
 
