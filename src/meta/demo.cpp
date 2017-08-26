@@ -20,7 +20,7 @@ ach::Demo::Demo() {
 
 	app       = new sf::RenderWindow();
 	clock     = new sf::Clock;
-	screen    = new ach::ScreenJump;
+	screen    = new ach::ScreenBird;
 	running   = true;
 	focused   = true;
 	lastClock = clock->getElapsedTime().asMilliseconds();
