@@ -21,6 +21,8 @@ namespace ach {
 
 		void bound();
 
+		sf::Color  get();
+		void       set(sf::Color c);
 		ach::Color operator+(const ach::Color t);
 		ach::Color operator*(const float t);
 	};

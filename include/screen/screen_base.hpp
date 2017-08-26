@@ -16,7 +16,6 @@ namespace ach {
 		virtual ~Screen()                    {};
 		virtual void update()                {};
 		virtual void processEvent(sf::Event) {};
-		virtual void applyLangSettings()     {};
 	};
 }
 

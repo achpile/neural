@@ -17,13 +17,16 @@ namespace ach {
 		ach::Layer<ach::Color>   *input;
 		ach::Layer<ach::Color>   *output;
 
+		sf::CircleShape           circle;
+
 
 		 ScreenColors();
 		~ScreenColors();
 
-		void update()                {};
-		void processEvent(sf::Event) {};
-		void applyLangSettings()     {};
+		void update();
+		void render();
+		void renderNetwork();
+		void renderNeuron(int x, int y, sf::Color c);
 	};
 }
 
