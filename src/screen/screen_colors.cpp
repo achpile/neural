@@ -224,7 +224,7 @@ void ach::ScreenColors::process(unsigned int index) {
 	population->creatures[index]->fitness = fitness(output->neurons[0]->value,
 	                                                output->neurons[1]->value);
 
-	population->mutProb = 1 - (population->avg / 6.0f);
+	population->mutProb = 1.0f - (population->avg / 6.0f);
 
 	if (population->mutProb > 0.01f)
 		population->mutProb = 0.01f;
