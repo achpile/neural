@@ -22,7 +22,7 @@ ach::ScreenBird::ScreenBird() {
 	network->addLayer(6);
 	network->addLayer(1);
 
-	population = new ach::Population(FLAPPY_COUNT, network->count(), -10.0f, 10.0f);
+	population = new ach::Population(FLAPPY_COUNT, network->count(), -1.0f, 1.0f);
 
 	input  = network->getInput();
 	output = network->getOutput();
@@ -231,11 +231,11 @@ void ach::ScreenBird::renderText() {
 
 ***********************************************************************/
 void ach::ScreenBird::reset() {
-	offset   = 400.0f;
+	offset   = 300.0f;
 	distance = 0.0f;
 	actual   = 0;
 	score    = 0;
-	dst      = 381.0f;
+	dst      = 281.0f;
 
 	for (int i = 0; i < 4; i++)
 		tubes[i] = getRandomFloat(FLAPPY_LIMIT_T, FLAPPY_LIMIT_B);
@@ -346,4 +346,32 @@ void ach::ScreenBird::process(unsigned int index) {
 
 	if (output->neurons[0]->value > 0.0f)
 		birds[index].speed = -300.0f;
+}
+
+
+
+/***********************************************************************
+     * ScreenBird
+     * processEvent
+
+***********************************************************************/
+void ach::ScreenBird::processEvent(sf::Event event) {
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
+		for (int i = 0; i < FLAPPY_COUNT; i++)
+			if (!birds[i].dead) {
+				birds[i].dead = true;
+				population->creatures[i]->fitness = distance;
+			}
+
+
+		if (maxScore < score)
+			maxScore = score;
+
+		population->crossover2();
+		reset();
+		iterations++;
+
+		if (best < population->best)
+			best = population->best;
+	}
 }

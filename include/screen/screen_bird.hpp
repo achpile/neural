@@ -71,6 +71,8 @@ namespace ach {
 		void reset();
 		bool check(float y);
 		void process(unsigned int index);
+
+		void processEvent(sf::Event event);
 	};
 }
 
