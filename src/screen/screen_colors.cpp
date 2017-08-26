@@ -22,7 +22,7 @@ ach::ScreenColors::ScreenColors() {
 	network->addLayer(4);
 	network->addLayer(2);
 
-	population = new ach::Population(100, network->count(), -2.0f, 2.0f);
+	population = new ach::Population(20, network->count(), -2.0f, 2.0f);
 
 	input  = network->getInput();
 	output = network->getOutput();
@@ -166,6 +166,9 @@ void ach::ScreenColors::process(unsigned int index) {
 	                                                output->neurons[1]->value);
 
 	population->mutProb = 1 - (population->avg / 6.0f);
+
+	if (population->mutProb > 0.05f)
+		population->mutProb = 0.05f;
 }
 
 
