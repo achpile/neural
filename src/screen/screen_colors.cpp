@@ -22,7 +22,7 @@ ach::ScreenColors::ScreenColors() {
 	network->addLayer(4);
 	network->addLayer(2);
 
-	population = new ach::Population(20, network->count(), -2.0f, 2.0f);
+	population = new ach::Population(100, network->count(), 0.0f, 1.0f);
 
 	input  = network->getInput();
 	output = network->getOutput();
@@ -34,7 +34,7 @@ ach::ScreenColors::ScreenColors() {
 	population->reset();
 
 	circle.setRadius(30);
-	timer.setTimer(0.05f);
+	timer.setTimer(0.25f);
 
 	goal1.set(sf::Color(200,   0, 200));
 	goal2.set(sf::Color(100, 200, 100));
@@ -167,8 +167,8 @@ void ach::ScreenColors::process(unsigned int index) {
 
 	population->mutProb = 1 - (population->avg / 6.0f);
 
-	if (population->mutProb > 0.05f)
-		population->mutProb = 0.05f;
+	if (population->mutProb > 0.01f)
+		population->mutProb = 0.01f;
 }
 
 
