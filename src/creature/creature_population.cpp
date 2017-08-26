@@ -45,10 +45,16 @@ unsigned int ach::Population::crossover() {
 	unsigned int min, p1, p2;
 
 	min = 0;
+	avg = creatures[0]->fitness;
 
-	for (unsigned int i = 1; i < creatures.size(); i++)
-		if (creatures[min]->fitness < creatures[i]->fitness)
+	for (unsigned int i = 1; i < creatures.size(); i++) {
+		avg += creatures[i]->fitness;
+
+		if (creatures[min]->fitness > creatures[i]->fitness)
 			min = i;
+	}
+
+	avg /= creatures.size();
 
 	do {
 		p1 = rand() % creatures.size();

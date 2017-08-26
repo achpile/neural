@@ -10,6 +10,7 @@
 #define __MISC_MATH
 
 
+float sqr(float x);
 float getRandomFloat(float min, float max);
 
 #endif

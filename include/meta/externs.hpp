@@ -11,6 +11,8 @@
 
 extern ach::Demo        *demo;
 extern sf::RenderWindow *app;
+extern sf::Font          font;
+extern sf::Text          text;
 extern float             frameClock;
 
 #endif

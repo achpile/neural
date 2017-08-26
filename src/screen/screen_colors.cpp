@@ -22,7 +22,7 @@ ach::ScreenColors::ScreenColors() {
 	network->addLayer(4);
 	network->addLayer(2);
 
-	population = new ach::Population(100, network->count(), 0.0f, 2.0f);
+	population = new ach::Population(100, network->count(), -2.0f, 2.0f);
 
 	input  = network->getInput();
 	output = network->getOutput();
@@ -34,6 +34,15 @@ ach::ScreenColors::ScreenColors() {
 	population->reset();
 
 	circle.setRadius(30);
+	timer.setTimer(0.05f);
+
+	goal1.set(sf::Color(200,   0, 200));
+	goal2.set(sf::Color(100, 200, 100));
+
+	for (unsigned int i = 0; i < population->creatures.size(); i++)
+		process(i);
+
+	copyColors();
 }
 
 
@@ -56,6 +65,13 @@ ach::ScreenColors::~ScreenColors() {
 
 ***********************************************************************/
 void ach::ScreenColors::update() {
+	process(population->crossover());
+
+	if (!timer.process()) {
+		timer.reset();
+		copyColors();
+	}
+
 	render();
 }
 
@@ -68,6 +84,7 @@ void ach::ScreenColors::update() {
 ***********************************************************************/
 void ach::ScreenColors::render() {
 	renderNetwork();
+	renderText();
 }
 
 
@@ -78,17 +95,17 @@ void ach::ScreenColors::render() {
 
 ***********************************************************************/
 void ach::ScreenColors::renderNetwork() {
-	renderNeuron( 50, 300, input->neurons[0]->value.get());
-	renderNeuron( 50, 400, input->neurons[1]->value.get());
-	renderNeuron( 50, 500, input->neurons[2]->value.get());
+	renderNeuron( 50, 300, colors[0],  1, sf::Color::Black);
+	renderNeuron( 50, 400, colors[1],  1, sf::Color::Black);
+	renderNeuron( 50, 500, colors[2],  1, sf::Color::Black);
 
-	renderNeuron(200, 250, network->layers[1]->neurons[0]->value.get());
-	renderNeuron(200, 350, network->layers[1]->neurons[1]->value.get());
-	renderNeuron(200, 450, network->layers[1]->neurons[2]->value.get());
-	renderNeuron(200, 550, network->layers[1]->neurons[3]->value.get());
+	renderNeuron(200, 250, colors[3],  1, sf::Color::Black);
+	renderNeuron(200, 350, colors[4],  1, sf::Color::Black);
+	renderNeuron(200, 450, colors[5],  1, sf::Color::Black);
+	renderNeuron(200, 550, colors[6],  1, sf::Color::Black);
 
-	renderNeuron(350, 325, output->neurons[0]->value.get());
-	renderNeuron(350, 475, output->neurons[1]->value.get());
+	renderNeuron(350, 325, colors[7], 20, goal1.get());
+	renderNeuron(350, 475, colors[8], 20, goal2.get());
 }
 
 
@@ -98,8 +115,67 @@ void ach::ScreenColors::renderNetwork() {
      * renderNeuron
 
 ***********************************************************************/
-void ach::ScreenColors::renderNeuron(int x, int y, sf::Color c) {
+void ach::ScreenColors::renderNeuron(int x, int y, sf::Color c, int border, sf::Color bc) {
+	circle.setOutlineThickness(border);
+	circle.setOutlineColor(bc);
 	circle.setPosition(x, y);
 	circle.setFillColor(c);
 	app->draw(circle);
+}
+
+
+
+/***********************************************************************
+     * ScreenColors
+     * renderText
+
+***********************************************************************/
+void ach::ScreenColors::renderText() {
+	drawText(10, 10, std::string("Avg. fitness: ") + std::to_string(population->avg));
+}
+
+
+
+/***********************************************************************
+     * ScreenColors
+     * fitness
+
+***********************************************************************/
+float ach::ScreenColors::fitness(ach::Color c1, ach::Color c2) {
+	return 2.0f - ((sqr(c1.r - goal1.r) + sqr(c1.g - goal1.g) + sqr(c1.b - goal1.b)) + 
+	               (sqr(c2.r - goal2.r) + sqr(c2.g - goal2.g) + sqr(c2.b - goal2.b)));
+}
+
+
+
+/***********************************************************************
+     * ScreenColors
+     * process
+
+***********************************************************************/
+void ach::ScreenColors::process(unsigned int index) {
+	network->calculate(&population->creatures[index]->dna);
+	population->creatures[index]->fitness = fitness(output->neurons[0]->value,
+	                                            output->neurons[1]->value);
+}
+
+
+
+/***********************************************************************
+     * ScreenColors
+     * copyColors
+
+***********************************************************************/
+void ach::ScreenColors::copyColors() {
+	colors[0] = input->neurons[0]->value.get();
+	colors[1] = input->neurons[1]->value.get();
+	colors[2] = input->neurons[2]->value.get();
+
+	colors[3] = network->layers[1]->neurons[0]->value.get();
+	colors[4] = network->layers[1]->neurons[1]->value.get();
+	colors[5] = network->layers[1]->neurons[2]->value.get();
+	colors[6] = network->layers[1]->neurons[3]->value.get();
+
+	colors[7] = output->neurons[0]->value.get();
+	colors[8] = output->neurons[1]->value.get();
 }

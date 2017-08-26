@@ -17,7 +17,6 @@
 void createWindow() {
 	app->create(sf::VideoMode(800, 600, 32), PROJECT_CAPTION, sf::Style::Close);
 	app->setMouseCursorVisible(true);
-	app->setFramerateLimit(60);
 	app->setVerticalSyncEnabled(true);
 
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
@@ -28,4 +27,17 @@ void createWindow() {
 
 	if (offset.x > 0 && offset.y > 0)
 		app->setPosition(offset);
+}
+
+
+
+/***********************************************************************
+     * drawText
+
+***********************************************************************/
+void drawText(int x, int y, std::string str) {
+	text.setPosition(x, y);
+	text.setString(str);
+
+	app->draw(text);
 }

@@ -26,6 +26,11 @@ ach::Demo::Demo() {
 	lastClock = clock->getElapsedTime().asMilliseconds();
 
 	createWindow();
+
+	font.loadFromFile("data/FSEX300.ttf");
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setFillColor(sf::Color::Black);
 }
 
 
@@ -60,7 +65,7 @@ void ach::Demo::update() {
 
 	if (!focused) return;
 
-	app->clear();
+	app->clear(sf::Color::White);
 	screen->update();
 	app->display();
 }

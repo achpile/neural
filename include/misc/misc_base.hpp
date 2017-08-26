@@ -11,5 +11,6 @@
 
 
 void createWindow();
+void drawText(int x, int y, std::string str);
 
 #endif

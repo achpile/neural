@@ -11,6 +11,8 @@
 
 ach::Demo        *demo;
 sf::RenderWindow *app;
+sf::Font          font;
+sf::Text          text;
 float             frameClock;
 
 #endif

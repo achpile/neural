@@ -16,6 +16,7 @@ namespace ach {
 
 		float min;
 		float max;
+		float avg;
 
 
 		 Population(unsigned int count, unsigned int DNAlen, float _min, float _max);
