@@ -93,8 +93,12 @@ unsigned int ach::Population::crossover2() {
 		else return 0;
 	});
 
-	for (unsigned int i = 0, k = creatures.size() - 1; i < k - 1; i++, k--)
+	for (unsigned int i = 0, k = creatures.size() - 1; i < k - 1; i++, k--) {
+		if (creatures[k]->fitness == creatures[0]->fitness)
+			break;
+
 		mutations += creatures[k]->crossover(&creatures[i]->dna, &creatures[i+1]->dna, min, max, mutProb);
+	}
 
 	return 0;
 }
