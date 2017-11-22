@@ -34,7 +34,7 @@
 #define FLAPPY_SPEED   200.0f
 #define FLAPPY_DIFF    300.0f
 #define FLAPPY_HIGH     75.0f
-#define FLAPPY_COUNT   500
+#define FLAPPY_COUNT   10
 #define FLAPPY_LIMIT_T 125.0f
 #define FLAPPY_LIMIT_B 415.0f
 
