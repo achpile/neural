@@ -255,6 +255,16 @@ void ach::ScreenHexagon::phys() {
 
 ***********************************************************************/
 bool ach::ScreenHexagon::check(float angle) {
+	if (angle < 0.0f     ) angle += 2.0f * PI;
+	if (angle > 2.0f * PI) angle -= 2.0f * PI;
+
+	int section   = floor(angle / (PI / 3.0f));
+	float loBound = sectors[section];
+	float hiBound = sectors[section] + HEXAGON_THICKNESS;
+
+	if (HEXAGON_OFFSET > loBound &&
+	    HEXAGON_OFFSET < hiBound) return true;
+
 	return false;
 }
 
