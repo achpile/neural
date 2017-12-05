@@ -29,6 +29,7 @@ namespace ach {
 		sf::ConvexShape          *shape;
 		sf::Vertex                line[2];
 
+		float                     sectors[6];
 		float                     distance;
 		float                     best;
 		unsigned int              iterations;
@@ -42,11 +43,14 @@ namespace ach {
 		void update();
 		void render();
 		void renderScene();
+		void renderLine(int i);
+		void renderShape(int i, float dist);
 		void renderPlayer(float angle, int index);
 		void renderText();
 
 		void phys();
 		void next();
+		bool needNext();
 		void reset();
 		bool check(float angle);
 		void process(unsigned int index);

@@ -45,6 +45,7 @@ ach::ScreenHexagon::ScreenHexagon() {
 	center->setFillColor(sf::Color::Black);
 	center->setOutlineColor(sf::Color::White);
 	center->setOutlineThickness(2);
+	center->setRotation((PI / 6.0f) * RAD_TO_DEG);
 
 	line[0].color = sf::Color(100, 100, 100);
 	line[1].color = sf::Color(100, 100, 100);
@@ -79,6 +80,11 @@ ach::ScreenHexagon::~ScreenHexagon() {
 void ach::ScreenHexagon::update() {
 	distance += frameClock;
 
+	for (int i = 0; i < 6; i++)
+		sectors[i] -= HEXAGON_SPEED * frameClock;
+
+	if (needNext()) next();
+
 	phys();
 
 	for (int i = 0; i < HEXAGON_COUNT; i++)
@@ -110,11 +116,47 @@ void ach::ScreenHexagon::render() {
 
 ***********************************************************************/
 void ach::ScreenHexagon::renderScene() {
+	for (int i = 0; i < 6; i++)
+		renderLine(i);
+
 	app->draw(*center);
+
+	for (int i = 0; i < 6; i++)
+		renderShape(i, sectors[i]);
 
 	for (int i = 0; i < HEXAGON_COUNT; i++)
 		if (!players[i].dead)
 			renderPlayer(players[i].angle, i);
+}
+
+
+
+/***********************************************************************
+     * ScreenHexagon
+     * renderShape
+
+***********************************************************************/
+void ach::ScreenHexagon::renderShape(int i, float dist) {
+	shape->setPoint(0, getPos(i    , dist                    ));
+	shape->setPoint(1, getPos(i    , dist + HEXAGON_THICKNESS));
+	shape->setPoint(2, getPos(i + 1, dist + HEXAGON_THICKNESS));
+	shape->setPoint(3, getPos(i + 1, dist                    ));
+
+	app->draw(*shape);
+}
+
+
+
+/***********************************************************************
+     * ScreenHexagon
+     * renderLine
+
+***********************************************************************/
+void ach::ScreenHexagon::renderLine(int i) {
+	line[0].position = getPos(i, HEXAGON_RADIUS);
+	line[1].position = getPos(i, 500);
+
+	app->draw(line, 2, sf::Lines);
 }
 
 
@@ -170,6 +212,8 @@ void ach::ScreenHexagon::reset() {
 		players[i].angle = getRandomFloat(0.0f, 2.0f * PI);
 		players[i].dead  = false;
 	}
+
+	next();
 }
 
 
@@ -212,6 +256,49 @@ void ach::ScreenHexagon::phys() {
 ***********************************************************************/
 bool ach::ScreenHexagon::check(float angle) {
 	return false;
+}
+
+
+
+/***********************************************************************
+     * ScreenHexagon
+     * next
+
+***********************************************************************/
+void ach::ScreenHexagon::next() {
+	std::vector<int> list;
+	int              k;
+
+	for (int i = 0; i < 6; i++)
+		list.push_back(i);
+
+	std::random_shuffle(list.begin(), list.end());
+
+	switch (rand() % 5) {
+		case 0: k = 1; break;
+		case 1: k = 2; break;
+		case 2: k = 3; break;
+		case 3: k = 4; break;
+		case 4: k = 5; break;
+	}
+
+	for (int i = 0; i < 6; i++)
+		sectors[list[i]] = HEXAGON_MINRAD + HEXAGON_STEPRAD * (i / k);
+}
+
+
+
+/***********************************************************************
+     * ScreenHexagon
+     * needNext
+
+***********************************************************************/
+bool ach::ScreenHexagon::needNext() {
+	for (int i = 0; i < 6; i++)
+		if (sectors[i] > HEXAGON_RADIUS - HEXAGON_THICKNESS)
+			return false;
+
+	return true;
 }
 
 
