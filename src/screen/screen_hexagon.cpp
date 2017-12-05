@@ -20,6 +20,7 @@ ach::ScreenHexagon::ScreenHexagon() {
 
 	network->addLayer(6);
 	network->addLayer(8);
+	network->addLayer(8);
 	network->addLayer(6);
 
 	population = new ach::Population(HEXAGON_COUNT, network->count(), -1.0f, 1.0f);
@@ -325,7 +326,7 @@ void ach::ScreenHexagon::process(unsigned int index) {
 	if (angle > 2.0f * PI) angle -= 2.0f * PI;
 
 	for (int i = 0; i < 6; i++)
-		input->neurons[i]->value = sectors[i] - HEXAGON_OFFSET;
+		input->neurons[i]->value = (sectors[i] > HEXAGON_OFFSET) ? sectors[i] - HEXAGON_OFFSET : HEXAGON_MINRAD;
 
 	network->calculate(&population->creatures[index]->dna);
 
