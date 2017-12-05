@@ -21,7 +21,7 @@ ach::ScreenHexagon::ScreenHexagon() {
 	network->addLayer(6);
 	network->addLayer(8);
 	network->addLayer(8);
-	network->addLayer(6);
+	network->addLayer(2);
 
 	population = new ach::Population(HEXAGON_COUNT, network->count(), -1.0f, 1.0f);
 
@@ -325,16 +325,22 @@ void ach::ScreenHexagon::process(unsigned int index) {
 	if (angle < 0.0f     ) angle += 2.0f * PI;
 	if (angle > 2.0f * PI) angle -= 2.0f * PI;
 
+	int section = floor(angle / (PI / 3.0f));
+
 	for (int i = 0; i < 6; i++)
-		input->neurons[i]->value = (sectors[i] > HEXAGON_OFFSET) ? sectors[i] - HEXAGON_OFFSET : HEXAGON_MINRAD;
+		input->neurons[i]->value = (sectors[(section + i) % 6] > HEXAGON_OFFSET) ? sectors[(section + i) % 6] - HEXAGON_OFFSET : HEXAGON_MINRAD;
 
 	network->calculate(&population->creatures[index]->dna);
 
-	int dir = getDir(angle);
+	//int dir = getDir(angle);
 
-	if (!check(players[index].angle + dir * frameClock * HEXAGON_MOVE))
-		players[index].angle += dir * frameClock * HEXAGON_MOVE;
+	if (output->neurons[0]->value > 0.0f) {
+		int dir = 1;
+		if (output->neurons[1]->value < 0.0f) dir = -1;
 
+		if (!check(players[index].angle + dir * frameClock * HEXAGON_MOVE))
+			players[index].angle += dir * frameClock * HEXAGON_MOVE;
+	}
 
 	if (players[index].angle < 0.0f     ) players[index].angle += 2.0f * PI;
 	if (players[index].angle > 2.0f * PI) players[index].angle -= 2.0f * PI;
