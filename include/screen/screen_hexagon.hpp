@@ -12,20 +12,39 @@
 
 namespace ach {
 	struct ScreenHexagon : Screen {
-		ach::Network<ach::Color> *network;
+		ach::Network<float>      *network;
 		ach::Population          *population;
-		ach::Layer<ach::Color>   *input;
-		ach::Layer<ach::Color>   *output;
-		ach::DNA                  dna;
+		ach::Layer<float>        *input;
+		ach::Layer<float>        *output;
+		ach::Bird                 birds[FLAPPY_COUNT];
 
-		ach::Timer                timer;
-		ach::Color                goal1;
-		ach::Color                goal2;
-		sf::CircleShape           circle;
-		sf::Color                 colors[9];
-		sf::VertexArray           line;
+		sf::Texture               bird_up_t;
+		sf::Texture               bird_down_t;
+		sf::Texture               floor_t;
+		sf::Texture               bg_t;
+		sf::Texture               tube_top_t;
+		sf::Texture               tube_bot_t;
 
+		sf::Sprite                bird_up;
+		sf::Sprite                bird_down;
+		sf::Sprite                tube_top;
+		sf::Sprite                tube_bot;
+		sf::RectangleShape        floor;
+		sf::RectangleShape        bg;
+
+		sf::IntRect               floor_rect;
+		sf::IntRect               bg_rect;
+
+		float                     distance;
+		float                     offset;
+		float                     dst;
+		float                     best;
+		float                     tubes[4];
 		unsigned int              iterations;
+		unsigned int              alive;
+		int                       actual;
+		int                       score;
+		int                       maxScore;
 
 
 		 ScreenHexagon();
@@ -33,15 +52,20 @@ namespace ach {
 
 		void update();
 		void render();
+		void renderScene();
+		void renderTubes();
+		void renderTube(float x, float y);
+		void renderBirds();
+		void renderBird(float y, float speed);
 		void renderText();
-		void renderNetwork();
-		void renderNeuron(int x, int y, sf::Color c, int border = 0, sf::Color bc = sf::Color::White);
-		void renderLine(int x1, int y1, int x2, int y2, float weight);
 
-		float fitness(ach::Color c1, ach::Color c2);
-		void  process(unsigned int index);
-		void  copyColors();
-		void  copyWeights();
+		void phys();
+		void next();
+		void reset();
+		bool check(float y);
+		void process(unsigned int index);
+
+		void processEvent(sf::Event event);
 	};
 }
 
