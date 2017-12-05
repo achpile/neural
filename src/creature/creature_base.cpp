@@ -28,17 +28,17 @@ ach::Creature::Creature(unsigned int DNAlen, float min, float max) {
 
 ***********************************************************************/
 int ach::Creature::crossover(ach::DNA *p1, ach::DNA *p2, float min, float max, float mutProb) {
-	int res = 0;
+	unsigned int crosspoint = rand() % dna.weights.size();
 
 	for (unsigned int i = 0; i < dna.weights.size(); i++) {
-		if ((float)(rand() % 1000) / 1000.0f < mutProb) {
-			dna.weights[i] = getRandomFloat(min, max);
-			res++;
-		} else {
-			if (rand() % 2) dna.weights[i] = p1->weights[i];
-			else            dna.weights[i] = p2->weights[i];
-		}
+		if (i < crosspoint) dna.weights[i] = p1->weights[i];
+		else                dna.weights[i] = p2->weights[i];
 	}
 
-	return res;
+	if ((float)(rand() % 1000) / 1000.0f < mutProb) {
+		dna.weights[rand() % dna.weights.size()] = getRandomFloat(min, max);
+		return 1;
+	}
+
+	return 0;
 }

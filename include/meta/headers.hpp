@@ -44,6 +44,7 @@
 #include "screen/screen_base.hpp"
 #include "screen/screen_colors.hpp"
 #include "screen/screen_jump.hpp"
+#include "screen/screen_hexagon.hpp"
 #include "screen/screen_bird.hpp"
 
 #include "demo.hpp"
