@@ -28,6 +28,14 @@
 
 
 /***********************************************************************
+     * Math
+
+***********************************************************************/
+#define PI             3.1415926f
+
+
+
+/***********************************************************************
      * Flappy Bird
 
 ***********************************************************************/
@@ -44,7 +52,14 @@
      * Hexagon
 
 ***********************************************************************/
-#define HEXAGON_COUNT   10
+#define HEXAGON_COUNT     8
+#define HEXAGON_MOVE      8.0f
+#define HEXAGON_RADIUS    40.0f
+#define HEXAGON_OFFSET    50.0f
+#define HEXAGON_THICKNESS 20.0f
+#define HEXAGON_SPEED     175.0f
+#define HEXAGON_MINRAD    185.0f
+#define HEXAGON_STEPRAD   75.0f
 
 
 #endif

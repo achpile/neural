@@ -35,7 +35,8 @@ void createWindow() {
      * drawText
 
 ***********************************************************************/
-void drawText(int x, int y, std::string str) {
+void drawText(int x, int y, std::string str, sf::Color color) {
+	text.setFillColor(color);
 	text.setPosition(x, y);
 	text.setString(str);
 

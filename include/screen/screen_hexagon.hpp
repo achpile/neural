@@ -11,40 +11,29 @@
 
 
 namespace ach {
+	struct HexPlayer {
+		float angle;
+		bool  dead;
+	};
+
+
 	struct ScreenHexagon : Screen {
 		ach::Network<float>      *network;
 		ach::Population          *population;
 		ach::Layer<float>        *input;
 		ach::Layer<float>        *output;
-		ach::Bird                 birds[FLAPPY_COUNT];
+		ach::HexPlayer            players[HEXAGON_COUNT];
 
-		sf::Texture               bird_up_t;
-		sf::Texture               bird_down_t;
-		sf::Texture               floor_t;
-		sf::Texture               bg_t;
-		sf::Texture               tube_top_t;
-		sf::Texture               tube_bot_t;
-
-		sf::Sprite                bird_up;
-		sf::Sprite                bird_down;
-		sf::Sprite                tube_top;
-		sf::Sprite                tube_bot;
-		sf::RectangleShape        floor;
-		sf::RectangleShape        bg;
-
-		sf::IntRect               floor_rect;
-		sf::IntRect               bg_rect;
+		sf::CircleShape          *center;
+		sf::CircleShape          *player;
+		sf::ConvexShape          *shape;
+		sf::Vertex                line[2];
 
 		float                     distance;
-		float                     offset;
-		float                     dst;
 		float                     best;
-		float                     tubes[4];
 		unsigned int              iterations;
 		unsigned int              alive;
 		int                       actual;
-		int                       score;
-		int                       maxScore;
 
 
 		 ScreenHexagon();
@@ -53,17 +42,17 @@ namespace ach {
 		void update();
 		void render();
 		void renderScene();
-		void renderTubes();
-		void renderTube(float x, float y);
-		void renderBirds();
-		void renderBird(float y, float speed);
+		void renderPlayer(float angle, int index);
 		void renderText();
 
 		void phys();
 		void next();
 		void reset();
-		bool check(float y);
+		bool check(float angle);
 		void process(unsigned int index);
+
+		sf::Vector2f getPos(int i, float radius);
+		sf::Vector2f getPos(float angle, float radius);
 
 		void processEvent(sf::Event event);
 	};
