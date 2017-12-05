@@ -19,8 +19,8 @@ ach::ScreenHexagon::ScreenHexagon() {
 	network = new ach::Network<float>;
 
 	network->addLayer(6);
+	network->addLayer(8);
 	network->addLayer(6);
-	network->addLayer(1);
 
 	population = new ach::Population(HEXAGON_COUNT, network->count(), -1.0f, 1.0f);
 
@@ -319,20 +319,76 @@ bool ach::ScreenHexagon::needNext() {
 
 ***********************************************************************/
 void ach::ScreenHexagon::process(unsigned int index) {
-	//input->neurons[0]->value = birds[index].y - tubes[actual];
-	//input->neurons[1]->value = dst;
+	float angle = players[index].angle;
+
+	if (angle < 0.0f     ) angle += 2.0f * PI;
+	if (angle > 2.0f * PI) angle -= 2.0f * PI;
+
+	for (int i = 0; i < 6; i++)
+		input->neurons[i]->value = sectors[i] - HEXAGON_OFFSET;
 
 	network->calculate(&population->creatures[index]->dna);
-/*
-	if (output->neurons[0]->value > 0.4f)
-		players[index].angle += frameClock * HEXAGON_MOVE;
 
-	if (output->neurons[0]->value < -0.4f)
-		players[index].angle -= frameClock * HEXAGON_MOVE;
-*/
+	int dir = getDir(angle);
+
+	if (!check(players[index].angle + dir * frameClock * HEXAGON_MOVE))
+		players[index].angle += dir * frameClock * HEXAGON_MOVE;
+
 
 	if (players[index].angle < 0.0f     ) players[index].angle += 2.0f * PI;
 	if (players[index].angle > 2.0f * PI) players[index].angle -= 2.0f * PI;
+}
+
+
+
+/***********************************************************************
+     * ScreenHexagon
+     * getDir
+
+***********************************************************************/
+int ach::ScreenHexagon::getDir(float angle) {
+	int section = floor(angle / (PI / 3.0f));
+	int dest    = getMax();
+
+	int res;
+
+	if (dest == section) return 0;
+
+	if (dest > section) res =  1;
+	else                res = -1;
+
+	if (abs(section - dest) >= 3)
+		res = -res;
+
+	return res;
+}
+
+
+
+/***********************************************************************
+     * ScreenHexagon
+     * getMax
+
+***********************************************************************/
+int ach::ScreenHexagon::getMax() {
+	bool found;
+
+	for (int i = 0; i < 6; i++) {
+		found = true;
+
+		for (int j = 0; j < 6; j++) {
+			if (i == j) continue;
+
+			if (output->neurons[i]->value < output->neurons[j]->value) {
+				found = false;
+				break;
+			}
+		}
+
+		if (found) return i;
+	}
+
+	return 0;
 }
 
 

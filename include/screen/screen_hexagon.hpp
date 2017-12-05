@@ -55,6 +55,8 @@ namespace ach {
 		bool check(float angle);
 		void process(unsigned int index);
 
+		int          getDir(float angle);
+		int          getMax();
 		sf::Vector2f getPos(int i, float radius);
 		sf::Vector2f getPos(float angle, float radius);
 
