@@ -331,8 +331,6 @@ void ach::ScreenHexagon::process(unsigned int index) {
 
 	network->calculate(&population->creatures[index]->dna);
 
-	//int dir = getDir(angle);
-
 	if (output->neurons[0]->value > 0.0f) {
 		int dir = 1;
 		if (output->neurons[1]->value < 0.0f) dir = -1;
@@ -343,58 +341,6 @@ void ach::ScreenHexagon::process(unsigned int index) {
 
 	if (players[index].angle < 0.0f     ) players[index].angle += 2.0f * PI;
 	if (players[index].angle > 2.0f * PI) players[index].angle -= 2.0f * PI;
-}
-
-
-
-/***********************************************************************
-     * ScreenHexagon
-     * getDir
-
-***********************************************************************/
-int ach::ScreenHexagon::getDir(float angle) {
-	int section = floor(angle / (PI / 3.0f));
-	int dest    = getMax();
-
-	int res;
-
-	if (dest == section) return 0;
-
-	if (dest > section) res =  1;
-	else                res = -1;
-
-	if (abs(section - dest) >= 3)
-		res = -res;
-
-	return res;
-}
-
-
-
-/***********************************************************************
-     * ScreenHexagon
-     * getMax
-
-***********************************************************************/
-int ach::ScreenHexagon::getMax() {
-	bool found;
-
-	for (int i = 0; i < 6; i++) {
-		found = true;
-
-		for (int j = 0; j < 6; j++) {
-			if (i == j) continue;
-
-			if (output->neurons[i]->value < output->neurons[j]->value) {
-				found = false;
-				break;
-			}
-		}
-
-		if (found) return i;
-	}
-
-	return 0;
 }
 
 
