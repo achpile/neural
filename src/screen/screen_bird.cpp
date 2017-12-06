@@ -29,7 +29,7 @@ ach::ScreenBird::ScreenBird() {
 
 	population->reset();
 
-	population->mutProb = 0.005f;
+	population->mutProb = 0.05f;
 	best                = 0.0f;
 	iterations          = 0;
 	maxScore            = 0;

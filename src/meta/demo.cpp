@@ -20,7 +20,8 @@ ach::Demo::Demo() {
 
 	app       = new sf::RenderWindow();
 	clock     = new sf::Clock;
-	screen    = new ach::ScreenHexagon();
+	select    = new ach::ScreenSelect();
+	screen    = NULL;
 	running   = true;
 	lastClock = clock->getElapsedTime().asMilliseconds();
 
@@ -41,8 +42,10 @@ ach::Demo::Demo() {
 ***********************************************************************/
 ach::Demo::~Demo() {
 	delete clock;
-	delete screen;
+	delete select;
 	delete app;
+
+	if (screen) delete screen;
 }
 
 
@@ -62,7 +65,10 @@ void ach::Demo::update() {
 	processEvents();
 
 	app->clear(sf::Color::White);
-	screen->update();
+
+	if (screen) screen->update();
+	else        select->update();
+
 	app->display();
 }
 
@@ -77,7 +83,7 @@ void ach::Demo::processEvents() {
 	sf::Event event;
 	while (app->pollEvent(event)) processEvent(event);
 
-	if (!app->isOpen()) running = false;
+	if (!app->isOpen()) stop();
 }
 
 
@@ -95,7 +101,8 @@ void ach::Demo::processEvent(sf::Event event) {
 
 
 		default:
-			screen->processEvent(event);
+			if (screen) screen->processEvent(event);
+			else        select->processEvent(event);
 		break;
 	}
 }

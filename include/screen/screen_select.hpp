@@ -1,32 +1,25 @@
 /***********************************************************************
-     * File       : demo.hpp
-     * Created    : Aug 25, 2017
+     * File       : screen_select.hpp
+     * Created    : Dec 06, 2017
      * Copyright  : (C) 2017 Achpile
      * Author     : Fedosov Alexander
      * Email      : achpile@gmail.com
 
 ***********************************************************************/
-#ifndef __DEMO
-#define __DEMO
+#ifndef __SCREEN_SELECT
+#define __SCREEN_SELECT
 
 
 namespace ach {
-	struct Demo {
-		ach::Screen      *select;
-		ach::Screen      *screen;
-		sf::Clock        *clock;
-
-		long lastClock;
-		bool running;
-
-
-		 Demo();
-		~Demo();
+	struct ScreenSelect : Screen {
+		 ScreenSelect();
+		~ScreenSelect();
 
 		void update();
-		void stop();
+		void render();
 
-		void processEvents();
+		void create(int index);
+
 		void processEvent(sf::Event event);
 	};
 }
