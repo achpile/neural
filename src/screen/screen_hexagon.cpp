@@ -19,18 +19,17 @@ ach::ScreenHexagon::ScreenHexagon() {
 	network = new ach::Network<float>;
 
 	network->addLayer(6);
-	network->addLayer(8);
-	network->addLayer(8);
+	network->addLayer(12);
 	network->addLayer(2);
 
-	population = new ach::Population(HEXAGON_COUNT, network->count(), -1.0f, 1.0f);
+	population = new ach::Population(HEXAGON_COUNT, network->count(), -10.0f, 10.0f);
 
 	input  = network->getInput();
 	output = network->getOutput();
 
 	population->reset();
 
-	population->mutProb = 0.005f;
+	population->mutProb = 0.05f;
 	best                = 0.0f;
 	iterations          = 0;
 
@@ -238,7 +237,7 @@ void ach::ScreenHexagon::phys() {
 		if (!players[i].dead) alive++;
 	}
 
-	if (!alive) {
+	if (alive < HEXAGON_COUNT / 100) {
 		population->crossover2();
 		reset();
 		iterations++;
@@ -328,7 +327,7 @@ void ach::ScreenHexagon::process(unsigned int index) {
 	int section = floor(angle / (PI / 3.0f));
 
 	for (int i = 0; i < 6; i++)
-		input->neurons[i]->value = (sectors[(section + i) % 6] > HEXAGON_OFFSET) ? sectors[(section + i) % 6] - HEXAGON_OFFSET : HEXAGON_MINRAD;
+		input->neurons[i]->value = (sectors[(section + i) % 6] > HEXAGON_OFFSET) ? sectors[(section + i) % 6] - HEXAGON_OFFSET : HEXAGON_MINRAD + HEXAGON_STEPRAD * 5;
 
 	network->calculate(&population->creatures[index]->dna);
 

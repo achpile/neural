@@ -54,7 +54,7 @@
      * Hexagon
 
 ***********************************************************************/
-#define HEXAGON_COUNT     800
+#define HEXAGON_COUNT     2000
 #define HEXAGON_MOVE      8.0f
 #define HEXAGON_RADIUS    40.0f
 #define HEXAGON_OFFSET    50.0f
